@@ -1,0 +1,10 @@
+
+<!-- All packages -->
+{% extends "layout.html" %}
+{% block content %}
+    <ul>
+    {% for package in packages %} <!-- We iterate over all the packages and display them as a link. -->
+        <li class="links"><a href="{{ url_for('package', type=package) }}">{{ package }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock content %}

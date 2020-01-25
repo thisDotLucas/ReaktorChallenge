@@ -1,0 +1,82 @@
+
+<!-- Individual package -->
+{% extends "layout.html" %}
+{% block content %}
+
+    <!-- Package name and home link that redirects to the home page. -->
+    <div class="head">
+        <h1>{{ package }}</h1>
+        <a href="{{ url_for('index') }}">Home</a>
+    </div>
+
+
+    {% if dependencies is not none and dependencies|length > 0 %}
+
+        <!-- Dependencies -->
+        <div class="container">
+            <h3>Dependencies</h3>
+
+        <ul>
+
+                {% for dependency in dependencies %}
+
+                    {% if " | " in dependency %} <!-- If we have a pipe char we need to split this into an array  -->
+                     <li class="multiple-dependencies">
+                        {% for x_dependency in dependency.split(" | ") %}
+
+                            {% if x_dependency in keys %} <!-- We check if the package maps to anything -->
+
+                                <a href="{{ url_for('package', type=x_dependency) }}">{{ x_dependency }}</a> <!-- If yes, we create an a tag that links to it. -->
+
+                            {% else %}
+
+                                <span>{{ x_dependency }}</span> <!-- Else just a span. -->
+
+                            {% endif %}
+
+                            {% if not loop.last %}<span class="space"> | </span>{% endif %} <!-- We add the pipe character back so it is easier to distinguish them. -->
+
+                        {% endfor %}
+                </li>
+            {% else %} <!-- If there is no pipe character we do not need to worry about splitting. -->
+
+            <li>
+            {% if dependency in keys %}
+
+                <a href="{{ url_for('package', type=dependency) }}">{{ dependency }}</a>
+
+            {% else %}
+
+                <span>{{ dependency }}</span>
+
+            {% endif %}
+            </li>
+
+            {% endif %}
+    {% endfor %}
+    {% endif %}
+     </ul>
+        </div>
+
+
+    {% if inverted_dependencies|length > 0 %}
+
+        <div class="container">
+            <h3>Inverted dependencies</h3>
+            <ul>
+            {% for inverted_dependency in inverted_dependencies %} <!-- Inverted dependencies will always map so we do not have to worry about checking that. -->
+
+                <li><a href="{{ url_for('package', type=inverted_dependency) }}">{{ inverted_dependency }}</a></li>
+
+            {% endfor %}
+        </ul>
+    {% endif %}
+        </div>
+
+    <!-- Description -->
+    <div class="description container">
+        <h3>Description</h3>
+        <p>{{ description }}</p>
+    </div>
+
+{% endblock content %}
